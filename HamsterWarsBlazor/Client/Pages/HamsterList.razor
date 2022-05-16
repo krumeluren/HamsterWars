@@ -1,0 +1,45 @@
+﻿@page "/hamsterlist"
+@using Domain.Entities;
+@inject HttpClient Http;
+
+
+<h3>HamsterList</h3>
+
+@if (hamsters == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Age</th>
+                <th>Wins</th>
+                <th>Losses</th>
+                <th>Battles</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var hamster in hamsters)
+            {
+                <tr>
+                    <td>@hamster.Age</td>
+                    <td>@hamster.Wins</td>
+                    <td>@hamster.Losses</td>
+                    <td>@hamster.Battles</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+
+@code {
+    private Hamster[]? hamsters;
+    
+    protected override async Task OnInitializedAsync()
+    {
+        hamsters = await Http.GetFromJsonAsync<Hamster[]?>("Hamster");
+    }
+}
