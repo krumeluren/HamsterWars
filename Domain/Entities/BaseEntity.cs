@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace Domain.Entities
 {
-    public class BaseEntity<IKey>
+    public class BaseEntity
     {
-        public IKey Id { get; set; }
+        public int Id { get; set; }
     }
 }

@@ -19,10 +19,21 @@ namespace Repository.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            new HamsterMap(modelBuilder.Entity<Hamster>());           
+            //new HamsterMap(modelBuilder.Entity<Hamster>());
+            //modelBuilder.Entity<Battle>()
+            //    .HasOne(r => r.WinnerHamster)
+            //    .WithMany()
+            //    .OnDelete(DeleteBehavior.Restrict);
+
+            //modelBuilder.Entity<Battle>()
+            //    .HasOne(r => r.LoserHamster)
+            //    .WithMany()
+            //    .OnDelete(DeleteBehavior.Restrict);
+
         }
 
         public DbSet<Hamster> Hamster { get; set; }
+        public DbSet<Battle> Battle { get; set; }
     }
 }
 

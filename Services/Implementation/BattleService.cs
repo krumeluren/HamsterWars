@@ -5,11 +5,11 @@ namespace Services
 {
     public class BattleService : IBattleService
     {
-        private IRepository<Hamster, int> hamsterRepository;
+        private IRepository<Hamster> hamsterRepository;
+        
+        private IRepository<Battle> battleRepository;
 
-        private IRepository<Battle, int> battleRepository;
-
-        public BattleService(IRepository<Hamster, int> hamsterRepository, IRepository<Battle, int> battleRepository)
+        public BattleService(IRepository<Hamster> hamsterRepository, IRepository<Battle> battleRepository)
         {
             this.hamsterRepository = hamsterRepository;
             this.battleRepository = battleRepository;

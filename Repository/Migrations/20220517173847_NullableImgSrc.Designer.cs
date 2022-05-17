@@ -12,8 +12,8 @@ using Repository.Data;
 namespace Repository.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220515220021_Init")]
-    partial class Init
+    [Migration("20220517173847_NullableImgSrc")]
+    partial class NullableImgSrc
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -24,21 +24,6 @@ namespace Repository.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
-            modelBuilder.Entity("BattleHamster", b =>
-                {
-                    b.Property<int>("BattlesId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("HamstersId")
-                        .HasColumnType("int");
-
-                    b.HasKey("BattlesId", "HamstersId");
-
-                    b.HasIndex("HamstersId");
-
-                    b.ToTable("BattleHamster");
-                });
-
             modelBuilder.Entity("Domain.Entities.Battle", b =>
                 {
                     b.Property<int>("Id")
@@ -47,13 +32,20 @@ namespace Repository.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<DateTime>("Ended")
+                    b.Property<int>("LoserHamsterId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("TimeOfPost")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("Started")
-                        .HasColumnType("datetime2");
+                    b.Property<int>("WinnerHamsterId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("LoserHamsterId");
+
+                    b.HasIndex("WinnerHamsterId");
 
                     b.ToTable("Battle");
                 });
@@ -70,28 +62,25 @@ namespace Repository.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("FavFood")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Games")
+                    b.Property<int?>("Games")
                         .HasColumnType("int");
 
                     b.Property<string>("Img_Src")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Losses")
+                    b.Property<int?>("Losses")
                         .HasColumnType("int");
 
                     b.Property<string>("Loves")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Wins")
+                    b.Property<int?>("Wins")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -99,19 +88,30 @@ namespace Repository.Migrations
                     b.ToTable("Hamster");
                 });
 
-            modelBuilder.Entity("BattleHamster", b =>
+            modelBuilder.Entity("Domain.Entities.Battle", b =>
                 {
-                    b.HasOne("Domain.Entities.Battle", null)
-                        .WithMany()
-                        .HasForeignKey("BattlesId")
+                    b.HasOne("Domain.Entities.Hamster", "LoserHamster")
+                        .WithMany("BattlesLost")
+                        .HasForeignKey("LoserHamsterId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Domain.Entities.Hamster", null)
-                        .WithMany()
-                        .HasForeignKey("HamstersId")
+                    b.HasOne("Domain.Entities.Hamster", "WinnerHamster")
+                        .WithMany("BattlesWon")
+                        .HasForeignKey("WinnerHamsterId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("LoserHamster");
+
+                    b.Navigation("WinnerHamster");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Hamster", b =>
+                {
+                    b.Navigation("BattlesLost");
+
+                    b.Navigation("BattlesWon");
                 });
 #pragma warning restore 612, 618
         }

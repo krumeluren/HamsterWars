@@ -10,14 +10,19 @@ namespace Services
 {
     public class HamsterService : IHamsterService
     {
-        private IRepository<Hamster, int> hamsterRepository;
+        private IRepository<Hamster> hamsterRepository;
         
-        private IRepository<Battle, int> battleRepository;
+        private IRepository<Battle> battleRepository;
 
-        public HamsterService(IRepository<Hamster, int> hamsterRepository, IRepository<Battle, int> battleRepository)
+        public HamsterService(IRepository<Hamster> hamsterRepository, IRepository<Battle> battleRepository)
         {
             this.hamsterRepository = hamsterRepository;
             this.battleRepository = battleRepository;
+        }
+
+        public void CreateHamster(Hamster hamster)
+        {
+            hamsterRepository.Insert(hamster);
         }
 
         public IEnumerable<Hamster> GetAll()
@@ -28,6 +33,16 @@ namespace Services
         public Hamster GetHamsterById(int Id)
         {
             return hamsterRepository.GetById(Id);
+        }
+
+        public IEnumerable<Hamster> GetRandomHamsters()
+        {
+            var hamsters = hamsterRepository.GetRandom(2);
+            if (hamsters == null || hamsters.Count() != 2)
+            {
+                return new List<Hamster>();
+            }
+            return hamsters;
         }
     }
 }

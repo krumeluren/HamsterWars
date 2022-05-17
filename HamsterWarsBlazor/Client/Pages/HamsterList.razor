@@ -27,7 +27,7 @@ else
                     <td>@hamster.Age</td>
                     <td>@hamster.Wins</td>
                     <td>@hamster.Losses</td>
-                    <td>@hamster.Battles</td>
+                    
                 </tr>
             }
         </tbody>
@@ -35,11 +35,12 @@ else
 }
 
 
+
 @code {
     private Hamster[]? hamsters;
     
     protected override async Task OnInitializedAsync()
     {
-        hamsters = await Http.GetFromJsonAsync<Hamster[]?>("Hamster");
+        hamsters = await Http.GetFromJsonAsync<Hamster[]?>("api/hamster");
     }
 }

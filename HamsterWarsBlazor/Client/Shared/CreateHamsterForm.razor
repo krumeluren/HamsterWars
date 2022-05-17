@@ -1,0 +1,49 @@
+﻿@using HamsterWarsBlazor.Shared;
+@using Services
+@inject HttpClient Http;
+
+
+<div class="container" style="background-color: lightcyan;">
+    <h3 >CreateHamster Form</h3>
+    <form>
+        <EditForm Model="hamster" OnSubmit="HandleSubmit">
+            <div class="form-group">
+                <label>Name</label>
+                <InputText class="form-control" @bind-Value="hamster.Name"></InputText>
+            </div>
+            <div class="form-group">
+                <label>Age</label>
+                <InputNumber class="form-control" @bind-Value="hamster.Age"></InputNumber>
+            </div>
+            <div class="form-group">
+                <label>Favourite Food</label>
+                <InputText class="form-control" @bind-Value="hamster.FavFood"></InputText>
+            </div>
+            <div class="form-group">
+                <label>Favourite Activity</label>
+                <InputText class="form-control" @bind-Value="hamster.Loves"></InputText>
+            </div>
+            <div class="form-group">
+                <label>Image text</label>
+                <InputText class="form-control" @bind-Value="hamster.Img_Src"></InputText>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </EditForm>
+    </form>
+</div>
+
+
+
+@code {
+    public HamsterForm hamster { get; set; } = new HamsterForm();
+
+    async void HandleSubmit()
+    {
+        Console.WriteLine("Submitted");
+        Console.WriteLine(hamster.Age + hamster.Name + hamster.FavFood);
+
+        
+        //Send HamsterForm to server
+        await Http.PostAsJsonAsync("api/hamster", hamster);
+    }
+}

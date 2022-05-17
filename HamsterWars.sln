@@ -18,6 +18,9 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HamsterWarsBlazor.Shared", "HamsterWarsBlazor\Shared\HamsterWarsBlazor.Shared.csproj", "{1C838990-7809-448E-9FD4-F91F493F86F0}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_seeding", "_seeding", "{705E4333-90BF-45BB-907F-723927D13DD1}"
+	ProjectSection(SolutionItems) = preProject
+		_seeding.sql = _seeding.sql
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
