@@ -40,10 +40,9 @@
     async void HandleSubmit()
     {
         Console.WriteLine("Submitted");
-        Console.WriteLine(hamster.Age + hamster.Name + hamster.FavFood);
-
-        
         //Send HamsterForm to server
         await Http.PostAsJsonAsync("api/hamster", hamster);
+        hamster = new HamsterForm();
+        StateHasChanged();
     }
 }

@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="Shared\CreateHamsterModal.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="6.0.3" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="6.0.3" PrivateAssets="all" />
   </ItemGroup>
@@ -15,6 +19,23 @@
     <ProjectReference Include="..\..\Domain\Domain.csproj" />
     <ProjectReference Include="..\..\Services\Services.csproj" />
     <ProjectReference Include="..\Shared\HamsterWarsBlazor.Shared.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Pages\HamsterCard.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="Pages\HamsterCard.razor" />
+    <_ContentIncludedByDefault Remove="Shared\CreateHamsterModal.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Shared\CreateHamsterModal.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Pages\CreateHamsterModal.razor" />
   </ItemGroup>
 
 </Project>

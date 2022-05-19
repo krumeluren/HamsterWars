@@ -45,7 +45,7 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
-
+app.UseStaticFiles();
 app.MapRazorPages();
 app.MapControllers();
 app.MapFallbackToFile("index.html");

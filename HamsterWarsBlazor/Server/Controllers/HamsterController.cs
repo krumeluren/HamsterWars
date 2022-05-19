@@ -50,5 +50,17 @@ namespace HamsterWarsBlazor.Server.Controllers
             _hamsterService.CreateHamster(hamster);
             return Ok();
         }
+
+        [HttpPost("battleresult")]
+        public async Task<IActionResult> BattleResult(List<Hamster> hamsters)
+        {
+            var winner = _hamsterService.GetHamsterById(hamsters[0].Id);
+            var loser = _hamsterService.GetHamsterById(hamsters[1].Id);
+            
+            _hamsterService.BattleResult(winner, loser);
+            return Ok();
+            
+        }
+
     }
 }

@@ -20,8 +20,26 @@ namespace Services
             this.battleRepository = battleRepository;
         }
 
+        public void BattleResult(Hamster winner, Hamster loser)
+        {        
+            winner.Wins++;
+            loser.Losses++;
+            winner.Games++;
+            loser.Games++;
+
+            battleRepository.Insert(new Battle {
+                TimeOfPost = DateTime.Now,
+                WinnerHamster = winner,
+                LoserHamster = loser 
+            });
+        }
+
         public void CreateHamster(Hamster hamster)
         {
+            hamster.Games = 0;
+            hamster.Wins = 0;
+            hamster.Losses = 0;
+            
             hamsterRepository.Insert(hamster);
         }
 
@@ -32,7 +50,7 @@ namespace Services
         
         public Hamster GetHamsterById(int Id)
         {
-            return hamsterRepository.GetById(Id);
+            return hamsterRepository.GetById(Id);  
         }
 
         public IEnumerable<Hamster> GetRandomHamsters()

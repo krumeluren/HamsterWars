@@ -1,0 +1,39 @@
+﻿@using Domain.Entities
+
+<link href="../Pages/HamsterCard.razor.css" rel="stylesheet">
+
+<style>
+
+</style>
+
+<div class="card battlecard">
+    <img src="/images/hamsters/hamster-5.jpg" alt="...">
+    <h4 class="mb-3 text-uppercase text-secondary">@hamster.Name</h4>
+    <table class="table">
+        <tbody style="padding: 0;">
+            <tr>
+                <th class="text-center" scope="row">Favourite Food</th>
+
+                <td class="text-start">@hamster.FavFood</td>
+            </tr>
+            <tr>
+                <th class="text-center" scope="row">Age</th>
+
+                <td class="text-start">@hamster.Age</td>
+            </tr>
+
+        </tbody>
+
+    </table>
+    <dl>
+        <dt class="text-center">Loves</dt>
+        <dd>@hamster.Loves</dd>
+    </dl>
+
+</div>
+@code {
+    
+    [Parameter]
+    public Hamster hamster { get; set; }     
+
+}

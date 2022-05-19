@@ -7,6 +7,5 @@ namespace Services
     {
         IEnumerable<Battle> GetAll();
         Battle GetBattleById(int id);
-
     }
 }
