@@ -6,6 +6,8 @@
 <div class="p-1 text-center bg-light">
     <h1 class="p-2 px-3 text-uppercase text-primary">Hamster Grid</h1>
 </div>
+
+<CreateHamsterModal @ref="createHamsterModal"></CreateHamsterModal>
     
 <div class="grid-wrap">
     <div class="grid-container">
@@ -20,8 +22,15 @@
 
 </div>
 
+
+
 @code {
     private Hamster[]? hamsters;
+
+
+    private CreateHamsterModal createHamsterModal;
+    
+    private void OpenCreateHamsterModal() => createHamsterModal.Show();
 
     protected override async Task OnInitializedAsync()
     {
