@@ -9,7 +9,7 @@ public class HamsterForm
     [MinLength(4, ErrorMessage = "Name is too short (4 characters min)")]
     public string Name { get; set; }
     [Required(ErrorMessage = "An age is required")]
-    [Range(0, int.MaxValue, ErrorMessage = "Age must be a positive number")]
+    [Range(0, 1000, ErrorMessage = "Age must be between 0 and 1000")]
     public int Age { get; set; }
     [MaxLength(30, ErrorMessage = "Favourite Food is too long (30 characters max)")]
     public string? FavFood { get; set; }
