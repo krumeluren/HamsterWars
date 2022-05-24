@@ -1,66 +1,74 @@
 ﻿using Domain.Entities;
 using Repository;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Services
+namespace Services;
+public class HamsterService : IHamsterService
 {
-    public class HamsterService : IHamsterService
+    private IRepository<Hamster> hamsterRepository;
+    private IRepository<Battle> battleRepository;
+
+    public HamsterService(IRepository<Hamster> hamsterRepository,IRepository<Battle> battleRepository)
     {
-        private IRepository<Hamster> hamsterRepository;
-        
-        private IRepository<Battle> battleRepository;
+        this.hamsterRepository = hamsterRepository;
+        this.battleRepository = battleRepository;
+    }
+    public void BattleResult(Hamster winner, Hamster loser)
+    {
+        winner.Wins++;
+        loser.Losses++;
+        winner.Games++;
+        loser.Games++;
 
-        public HamsterService(IRepository<Hamster> hamsterRepository, IRepository<Battle> battleRepository)
+        battleRepository.Insert(new Battle()
         {
-            this.hamsterRepository = hamsterRepository;
-            this.battleRepository = battleRepository;
-        }
+            WinnerHamster = winner,
+            LoserHamster = loser,
+        });
+        battleRepository.SaveChanges();
+    }
+    public void CreateHamster(Hamster hamster)
+    {
+        hamster.Games = 0;
+        hamster.Wins = 0;
+        hamster.Losses = 0;
+        hamsterRepository.Insert(hamster);
+        hamsterRepository.SaveChanges();
+    }
+    public void DeleteHamster(Hamster hamster)
+    {
+        // Get all battles where this hamster is involved
+        var battles = battleRepository.GetAll().Where(x => x.WinnerHamster == hamster || x.LoserHamster == hamster);
 
-        public void BattleResult(Hamster winner, Hamster loser)
-        {        
-            winner.Wins++;
-            loser.Losses++;
-            winner.Games++;
-            loser.Games++;
-
-            battleRepository.Insert(new Battle {
-                TimeOfPost = DateTime.Now,
-                WinnerHamster = winner,
-                LoserHamster = loser 
-            });
-        }
-
-        public void CreateHamster(Hamster hamster)
+        foreach (var battle in battles)
         {
-            hamster.Games = 0;
-            hamster.Wins = 0;
-            hamster.Losses = 0;
-            
-            hamsterRepository.Insert(hamster);
-        }
-
-        public IEnumerable<Hamster> GetAll()
-        {
-            return hamsterRepository.GetAll();
-        }
-        
-        public Hamster GetHamsterById(int Id)
-        {
-            return hamsterRepository.GetById(Id);  
-        }
-
-        public IEnumerable<Hamster> GetRandomHamsters()
-        {
-            var hamsters = hamsterRepository.GetRandom(2);
-            if (hamsters == null || hamsters.Count() != 2)
+            if (battle.WinnerHamster == hamster)
             {
-                return new List<Hamster>();
+                battle.WinnerHamsterId = null;
             }
-            return hamsters;
+            else
+            {
+                battle.LoserHamsterId = null;
+            }
         }
+        hamsterRepository.Remove(hamster);
+        hamsterRepository.SaveChanges();
+    }
+    public IEnumerable<Hamster> GetAll()
+    {
+        return hamsterRepository.GetAll();
+    }
+    public Hamster? GetHamsterById(int Id)
+    {
+        return hamsterRepository.GetById(Id);
+    }
+    public IEnumerable<Hamster> GetRandomHamsters()
+    {      
+        var hamsters = hamsterRepository.GetRandom(2);
+
+        if (hamsters == null || hamsters.Count() != 2)
+        {
+            return new List<Hamster>();
+        }
+        return hamsters;
     }
 }

@@ -1,12 +1,17 @@
 ﻿@using HamsterWarsBlazor.Shared;
-@using Services
+@using Services;
+@using Services.Interface;
+@using System.IO;
 @inject HttpClient Http;
 @page "/create"
 
 <div class="container" style="background-color: lightcyan;">
-    <h3 >CreateHamster Form</h3>
+    <h3>Create Hamster</h3>
+    
     <form>
-        <EditForm Model="hamster" OnSubmit="HandleSubmit">
+        <EditForm id="submithamster" Model="hamster" OnSubmit="HandleSubmit">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
             <div class="form-group">
                 <label>Name</label>
                 <InputText class="form-control" @bind-Value="hamster.Name"></InputText>
@@ -24,25 +29,79 @@
                 <InputText class="form-control" @bind-Value="hamster.Loves"></InputText>
             </div>
             <div class="form-group">
-                <label>Image text</label>
-                <InputText class="form-control" @bind-Value="hamster.Img_Src"></InputText>
+                <label>File Upload</label>
+                <InputFile class="form-control" OnChange=@OnInputFileChanged></InputFile>
             </div>
-            <button type="submit" class="btn btn-primary">Submit</button>
+            @{
+                //Show real submit button when all fields are entered
+                if (hamster.Name != null)
+                {
+                    <button type="submit" class="btn btn-primary" disabled=@(!context.Validate())>Submit</button>
+                }
+                else
+                {
+                    <button type="submit" class="btn btn-secondary" disabled="disabled">Submit</button>
+                }
+            }
         </EditForm>
     </form>
+    
+    <div class="p-1 text-center ">
+        <h5 class="p-2 px-3 text-uppercase text-warning">Preview</h5>
+    </div>
+    
+    <div class="preview-container">
+        <HamsterCard IsPreview imgBase64=@imgBase64 hamster="new Hamster{ImgName=hamster.ImgName, Name=hamster.Name, Age = hamster.Age, FavFood = hamster.FavFood, Loves = hamster.Loves}"></HamsterCard>
+    </div>
 </div>
 
-
-
 @code {
+    /// <summary>
+    /// The model for the hamster form being filled
+    /// </summary>
     public HamsterForm hamster { get; set; } = new HamsterForm();
 
-    async void HandleSubmit()
+    /// <summary>
+    /// Base64 string preview of the image to be uploaded 
+    /// </summary>
+    public string? imgBase64 { get; set; }
+
+    /// <summary>
+    /// Callback for when the form is submitted (Close parent modal component)
+    /// </summary>
+    [Parameter]
+    public EventCallback onHandleSubmit { get; set; }
+
+    /// <summary>
+    /// Submit the form to the server controller
+    /// </summary>
+    public async void HandleSubmit()
     {
         Console.WriteLine("Submitted");
         //Send HamsterForm to server
         await Http.PostAsJsonAsync("api/hamster", hamster);
         hamster = new HamsterForm();
+        await onHandleSubmit.InvokeAsync();
         StateHasChanged();
     }
+    
+    /// <summary>
+    /// Handle the image file to be uploaded
+    /// </summary>
+    /// <param name="input"></param>
+    /// <returns></returns>
+    private async Task OnInputFileChanged(InputFileChangeEventArgs input)
+    {
+        var file = input.File;
+
+        var buffer = new byte[file.Size];
+        await file.OpenReadStream().ReadAsync(buffer);
+
+        imgBase64 = $"data:image/png;base64,{Convert.ToBase64String(buffer)}";
+
+        hamster.ImgData = Convert.ToBase64String(buffer);
+        hamster.ImgName = file.Name;
+        StateHasChanged();
+    }
+
 }

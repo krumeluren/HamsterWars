@@ -1,11 +1,8 @@
 ﻿using Domain.Entities;
 
-
-namespace Services
+namespace Services;
+public interface IBattleService
 {
-    public interface IBattleService
-    {
-        IEnumerable<Battle> GetAll();
-        Battle GetBattleById(int id);
-    }
+    IEnumerable<Battle> GetAll();
+    Battle? GetBattleById(int id);
 }

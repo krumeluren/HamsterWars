@@ -1,8 +1,11 @@
-﻿@page "/battle"
-@using Domain.Entities
+﻿@using Domain.Entities
+@using HamsterWarsBlazor.Shared
 @inject HttpClient Http
 
+@page "/battle"
 <PageTitle>Battle</PageTitle>
+
+<BattleStatistics hamsters="@previousHamsters"></BattleStatistics>
 
 <div class="p-1 text-center bg-light">
     <h1 class="p-2 px-3 text-uppercase text-primary">Battle</h1>
@@ -13,11 +16,9 @@
     }
     else
     {
-
-
         if (hamsters.Length <= 0)
         {
-            <p><em>No hamsters here :(</em></p>
+            <p><em>No hamsters are available...</em></p>
         }
         else
         {
@@ -28,9 +29,9 @@
             <div class="row">
                 @foreach (var hamster in hamsters)
                 {
-                    <div class="card-container" @onclick="()=>Vote(hamster)">
+                    <div style="cursor:pointer" class="card-container" @onclick="()=>UserVote(hamster)">
                         <HamsterCard hamster="@hamster"></HamsterCard>
-                    </div>                    
+                    </div>
                 }
             </div>
         }
@@ -38,30 +39,50 @@
 </div>
 
 @code {
+    private Hamster[]? previousHamsters;
 
     private Hamster[]? hamsters;
+
     protected override async Task OnInitializedAsync()
     {
         hamsters = await Http.GetFromJsonAsync<Hamster[]?>("api/hamster/random");
     }
 
-    async void Vote(Hamster winner)
+    private void UserVote(Hamster votedfor)
     {
-        Hamster loser = new Hamster();
-        foreach (var hamster in hamsters)
+        if (hamsters == null)
         {
-            if (hamster != winner)
-            {
-                loser = hamster;
-            }
+            Console.WriteLine("hamsters is null");
+            return;
         }
+        //Find loser
+        Hamster loser = hamsters.Where(h => h != votedfor).First();
+        Vote(votedfor, loser);
+    }
 
+    /// <summary>
+    /// Post the winner and loser to the server 
+    /// </summary>
+    /// <param name="winner"></param>
+    /// <param name="loser"></param>
+    private async void Vote(Hamster winner, Hamster loser)
+    {
         var result = new List<Hamster>();
         result.Add(winner);
         result.Add(loser);
-
-        Console.WriteLine("Voted");
+        Console.WriteLine("Vote submitted");
         await Http.PostAsJsonAsync("api/hamster/battleresult", result);
+        Update();
+    }
+
+    /// <summary>
+    /// Create a new battle
+    /// </summary>
+    private async void Update()
+    {
+        previousHamsters = hamsters;
+        hamsters = await Http.GetFromJsonAsync<Hamster[]?>("api/hamster/random");
         StateHasChanged();
     }
+
 }

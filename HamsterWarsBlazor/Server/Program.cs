@@ -1,11 +1,9 @@
-
-using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Repository;
 using Repository.Data;
 using Services;
-
+using Services.Implementation;
+using Services.Interface;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -15,7 +13,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
-
+builder.Services.AddScoped<IFileUpload, ImageUpload>();
 builder.Services.AddTransient(typeof(IHamsterService), typeof(HamsterService));
 builder.Services.AddTransient<IBattleService, BattleService>();
 
